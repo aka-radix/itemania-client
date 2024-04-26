@@ -1,6 +1,5 @@
 import { z } from "zod"
 
-
 export type EditProductFormState = {
   errors?: {
     productImage?: string
@@ -12,41 +11,40 @@ export type EditProductFormState = {
 }
 
 export interface FormState {
-errors?: {
-  username?: string[]
-  password?: string[]
-  other?: string
-}
-message?: string
+  errors?: {
+    username?: string[]
+    password?: string[]
+    other?: string
+  }
+  message?: string
 }
 
 export interface RegisterResponse {
-access: string
-refresh: string
+  access: string
+  refresh: string
 }
 
 export interface Item {
-id: number
-name: string
-description: string
-price: number
-image: string
+  id: number
+  name: string
+  description: string
+  price: number
+  image: string
 }
 
 export interface EditItemState {
-productName: string
-productDescription: string
-productPrice: number
-productImage: File | null
-
+  productName: string
+  productDescription: string
+  productPrice: number
+  productImage: File | null
 }
 
 export interface ItemsResponse {
-next: string | null
-previous: string | null
-count: number
-page: number
-results: Item[]
+  next: string | null
+  previous: string | null
+  count: number
+  page: number
+  results: Item[]
 }
 
 export interface ProductProps {
@@ -72,7 +70,6 @@ export const SignupFormSchema = z.object({
     .trim(),
 })
 
-
 export const EditItemFormSchema = z.object({
   productImage: z
     .any()
@@ -81,17 +78,18 @@ export const EditItemFormSchema = z.object({
       if (file) {
         return file?.size <= 1024 * 1024 * 20
       }
-      return true;
+      return true
     }, `Max image size is 2MB.`)
-    .refine(
-      (file: File) => {
-        if (file) {
-          return ["image/jpeg", "image/jpg", "image/png", "application/octet-stream"].includes(file?.type)
-        }
+    .refine((file: File) => {
+      if (file) {
+        return [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "application/octet-stream",
+        ].includes(file?.type)
       }
-      ,
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    ),
+    }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
   productName: z
     .string()
     .min(2, { message: "Product name must be at least 2 characters long." })
@@ -99,7 +97,13 @@ export const EditItemFormSchema = z.object({
       message: "Product name must not contain special characters.",
     }),
   productDescription: z.string().optional(),
-  productPrice: z.string().refine((val) => !Number.isNaN(parseInt(val, 10)), {
-    message: "Expected number, received a string",
-  }),
+  productPrice: z.string().refine(
+    (val) => {
+      const num = parseInt(val, 10)
+      return !Number.isNaN(num) && num >= 1
+    },
+    {
+      message: "The price must be greater than or equal to 1",
+    }
+  ),
 })

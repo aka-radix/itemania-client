@@ -60,6 +60,7 @@ export async function editProduct(
     throw new Error("Failed to edit item")
   }
 
+  revalidatePath("/items")
   revalidatePath(`/items/${productId?.toString()}`)
   redirect(`/items/${productId?.toString()}`)
 }

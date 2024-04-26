@@ -101,6 +101,7 @@ export default function EditProductForm({ item }: { item: Item }) {
           name="productPrice"
           id="productPrice"
           placeholder="Enter Price"
+          min={1}
           value={formData?.productPrice}
           onChange={(e) =>
             setFormData({ ...formData, productPrice: Number(e?.target?.value) })
