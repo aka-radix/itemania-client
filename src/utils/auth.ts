@@ -1,7 +1,7 @@
 import { jwtVerify } from "jose"
 
 export const getEncodedSecretKey = () => {
-  return new TextEncoder().encode(process.env.SECRET_KEY)
+  return new TextEncoder().encode("django-insecure-k2m38fbv_g(4g!3+t_=zyk09@$k7gae44zf+p_%jw2kqb_@vt&")
 }
 
 const checkTokenValid = (exp: number) => {
