@@ -1,5 +1,6 @@
 import type { Item, ItemsResponse } from "@/lib/definitions"
 import { cookies } from "next/headers"
+import { env } from "../app/env.js"
 
 export function getAccessToken() {
   const accessCookie = cookies().get("access")
@@ -8,7 +9,7 @@ export function getAccessToken() {
 
 export async function listItems(): Promise<ItemsResponse> {
   try {
-    const response = await fetch(`${process.env.API_HOST}/api/items`, {
+    const response = await fetch(`${env.API_HOST}/api/items`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +28,7 @@ export async function listItems(): Promise<ItemsResponse> {
 
 export async function getItem(id: number) {
   try {
-    const response = await fetch(`${process.env.API_HOST}/api/items/${id}`, {
+    const response = await fetch(`${env.API_HOST}/api/items/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

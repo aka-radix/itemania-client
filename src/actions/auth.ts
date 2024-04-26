@@ -6,21 +6,14 @@ import {
 } from "@/lib/definitions"
 import { cookies } from "next/headers"
 import { permanentRedirect } from "next/navigation"
+import { env } from "../app/env.js"
 
 export async function signup(formState: FormState, formData: FormData) {
-  return await authenticate(
-    `${process.env.API_HOST}/api/signup/`,
-    formState,
-    formData
-  )
+  return await authenticate(`${env.API_HOST}/api/signup/`, formState, formData)
 }
 
 export async function login(formState: FormState, formData: FormData) {
-  return await authenticate(
-    `${process.env.API_HOST}/api/login/`,
-    formState,
-    formData
-  )
+  return await authenticate(`${env.API_HOST}/api/login/`, formState, formData)
 }
 
 function deleteTokens() {
@@ -33,7 +26,7 @@ export async function logout() {
   const accessToken = accessCookie ? accessCookie.value : ""
 
   try {
-    await fetch(`${process.env.API_HOST}/api/logout/`, {
+    await fetch(`${env.API_HOST}/api/logout/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

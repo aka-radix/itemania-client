@@ -5,6 +5,7 @@ import { EditItemFormSchema } from "@/lib/definitions"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { env } from "../app/env.js"
 
 export async function editProduct(
   formState: EditProductFormState,
@@ -42,7 +43,7 @@ export async function editProduct(
     const accessToken = accessCookie ? accessCookie.value : ""
 
     const response = await fetch(
-      `${process.env.API_HOST}/api/items/${productId?.toString()}/`,
+      `${env.API_HOST}/api/items/${productId?.toString()}/`,
       {
         method: "PATCH",
         headers: {
