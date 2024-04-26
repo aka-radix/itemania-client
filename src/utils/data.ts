@@ -1,20 +1,17 @@
 import type { Item, ItemsResponse } from "@/lib/definitions"
 import { cookies } from "next/headers"
 
-function getAccessToken() {
+export function getAccessToken() {
   const accessCookie = cookies().get("access")
   return accessCookie ? accessCookie.value : ""
 }
 
 export async function listItems(): Promise<ItemsResponse> {
-  const accessToken = getAccessToken()
-
   try {
     const response = await fetch(`${process.env.API_HOST}/api/items`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
       },
     })
 
@@ -29,14 +26,11 @@ export async function listItems(): Promise<ItemsResponse> {
 }
 
 export async function getItem(id: number) {
-  const accessToken = getAccessToken()
-
   try {
     const response = await fetch(`${process.env.API_HOST}/api/items/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
       },
     })
 

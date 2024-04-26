@@ -45,7 +45,7 @@ export async function logout() {
     deleteTokens()
   }
 
-  permanentRedirect("/")
+  permanentRedirect("/items")
 }
 
 async function authenticate(
@@ -102,5 +102,5 @@ async function authenticate(
       },
     }
   }
-  permanentRedirect("/")
+  permanentRedirect("/items")
 }

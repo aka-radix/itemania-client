@@ -49,6 +49,13 @@ page: number
 results: Item[]
 }
 
+export interface ProductProps {
+  id: number
+  name: string
+  price: number
+  image: string
+}
+
 export const SignupFormSchema = z.object({
   username: z
     .string()

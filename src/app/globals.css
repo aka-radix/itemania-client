@@ -1,0 +1,36 @@
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+label {
+  color: #171958;
+  font-weight: 600;
+  font-size: 1.15rem;
+}
+
+input, textarea {
+  background: #EDEEF1;
+    padding: 1.2rem;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+::placeholder {
+  color: gray;
+  opacity: 1;
+}
+
+.save {
+  background-color: #00805A;
+}
+
+.cancel {
+  background-color: #919194;
+}

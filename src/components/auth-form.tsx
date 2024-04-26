@@ -1,9 +1,9 @@
 "use client"
 
-import SubmitButton from "@/components/submit-button"
 import { useFormState, useFormStatus } from "react-dom"
 import type { FormState } from "../lib/definitions"
-
+import Link from "next/link"
+import styles from "@/app/page.module.css"
 export default function AuthForm({
   authFn,
   submitButtonText,
@@ -14,8 +14,15 @@ export default function AuthForm({
   const [state, action] = useFormState(authFn, { errors: {} })
   const { pending } = useFormStatus()
   return (
-    <form action={action}>
-      <input id="username" name="username" placeholder="Username" />
+    <form action={action} className={styles.authForm}>
+      <h2>{submitButtonText}</h2>
+      <input
+        id="username"
+        name="username"
+        placeholder="Username"
+        required
+        className={styles.authFormInput}
+      />
       {state?.errors?.username?.map((error: string) => (
         <li key={error}>{error}</li>
       ))}
@@ -24,15 +31,27 @@ export default function AuthForm({
         id="password"
         name="password"
         placeholder="Password"
-        type="Password"
+        type="password"
+        required
+        className={styles.authFormInput}
       />
       {state?.errors?.password?.map((error: string) => (
         <li key={error}>{error}</li>
       ))}
 
+      <Link href="/forgot-password" className={styles.forgotPasswordLink}>
+        Forgot your password?
+      </Link>
+
       {state?.errors?.other && <p>{state?.errors?.other}</p>}
 
-      <SubmitButton text={submitButtonText} pending={pending} />
+      <button
+        type="submit"
+        disabled={pending}
+        className={styles.authFormActionButton}
+      >
+        {submitButtonText}
+      </button>
     </form>
   )
 }
