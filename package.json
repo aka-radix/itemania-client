@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "itemania",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,16 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.3"
+    "zod": "^3.23.4"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/eslint": "^8.56.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3"
-  }
+    "eslint-config-next": "14.2.3",
+    "prettier": "^3.2.5",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@8.15.3"
 }
