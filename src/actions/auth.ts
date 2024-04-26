@@ -77,8 +77,8 @@ async function authenticate(
 
     if (response.ok) {
       const { access, refresh }: RegisterResponse = await response.json()
-      cookies().set("access", access)
-      cookies().set("refresh", refresh)
+      cookies().set("access", access, { secure: true, httpOnly: true })
+      cookies().set("refresh", refresh, { secure: true, httpOnly: true })
     } else {
       const errors = await response.json()
       if ("non_field_errors" in errors) {
