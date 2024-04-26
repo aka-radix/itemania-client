@@ -6,9 +6,12 @@ import { NextResponse } from "next/server"
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
   const accessToken = cookies().get("access")
-
+  const productId = request.nextUrl.pathname.match(/\/items\/(\d+)\/edit$/)?.[1]
   const verifiedToken = accessToken && (await verifyToken(accessToken.value))
 
+  if (!verifiedToken && productId) {
+    return NextResponse.redirect(new URL(`/items/${productId}`, request.url))
+  }
   if (
     verifiedToken &&
     ["/login", "/signup"].includes(request.nextUrl.pathname)
