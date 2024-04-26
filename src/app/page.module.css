@@ -152,7 +152,7 @@
 
 .itemViewDetailsContainer {
   padding: 1rem 1.5rem 2rem 4.5rem;
-  max-width: 55%;
+  min-width: 55%;
   display: flex;
   flex-direction: column;
 }
