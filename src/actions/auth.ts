@@ -1,18 +1,18 @@
 "use server"
 import {
   SignupFormSchema,
-  type FormState,
+  type AuthFormState,
   type RegisterResponse,
 } from "@/lib/definitions"
 import { cookies } from "next/headers"
 import { permanentRedirect } from "next/navigation"
 import { env } from "../app/env.js"
 
-export async function signup(formState: FormState, formData: FormData) {
+export async function signup(formState: AuthFormState, formData: FormData) {
   return await authenticate(`${env.API_HOST}/api/signup/`, formState, formData)
 }
 
-export async function login(formState: FormState, formData: FormData) {
+export async function login(formState: AuthFormState, formData: FormData) {
   return await authenticate(`${env.API_HOST}/api/login/`, formState, formData)
 }
 
@@ -43,7 +43,7 @@ export async function logout() {
 
 async function authenticate(
   endpoint: string,
-  formState: FormState,
+  formState: AuthFormState,
   formData: FormData
 ) {
   const validatedFields = SignupFormSchema.safeParse({
@@ -69,11 +69,11 @@ async function authenticate(
     })
 
     if (response.ok) {
-      const { access, refresh }: RegisterResponse = await response.json()
+      const { access, refresh } = (await response.json()) as RegisterResponse
       cookies().set("access", access, { secure: true, httpOnly: true })
       cookies().set("refresh", refresh, { secure: true, httpOnly: true })
     } else {
-      const errors = await response.json()
+      const errors = (await response.json()) as AuthFormState
       if ("non_field_errors" in errors) {
         return {
           errors: {

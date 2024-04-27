@@ -1,6 +1,6 @@
 "use server"
 
-import type { EditProductFormState, Item } from "@/lib/definitions"
+import type { EditItemFormState } from "@/lib/definitions"
 import { EditItemFormSchema } from "@/lib/definitions"
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
@@ -8,14 +8,14 @@ import { redirect } from "next/navigation"
 import { env } from "../app/env.js"
 
 export async function editProduct(
-  formState: EditProductFormState,
+  formState: EditItemFormState,
   formData: FormData
 ) {
   const validatedFields = EditItemFormSchema.safeParse({
-    productName: formData.get("productName"),
-    productDescription: formData.get("productDescription"),
-    productPrice: formData.get("productPrice"),
-    productImage: formData.get("productImage"),
+    name: formData.get("name"),
+    description: formData.get("description"),
+    price: formData.get("price"),
+    image: formData.get("image"),
   })
 
   const productId = formData.get("productId")
@@ -29,15 +29,21 @@ export async function editProduct(
   try {
     const validatedFormData = new FormData()
 
-    const { productImage, productName, productDescription, productPrice } =
-      validatedFields.data
+    const {
+      image = undefined,
+      name,
+      description = undefined,
+      price,
+    } = validatedFields.data
 
-    if (productImage?.name !== "undefined") {
-      validatedFormData.set("image", productImage)
+    if (image && image?.name !== "undefined") {
+      validatedFormData.set("image", image)
     }
-    validatedFormData.set("name", productName)
-    validatedFormData.set("description", productDescription)
-    validatedFormData.set("price", productPrice)
+    validatedFormData.set("name", name)
+    if (description) {
+      validatedFormData.set("description", description)
+    }
+    validatedFormData.set("price", price)
 
     const accessCookie = cookies().get("access")
     const accessToken = accessCookie ? accessCookie.value : ""
@@ -55,10 +61,16 @@ export async function editProduct(
     )
 
     if (!response.ok) {
-      throw new Error("Failed to edit item")
+      return {
+        errors: { ...((await response.json()) as EditItemFormState) },
+      }
     }
   } catch (error) {
-    throw new Error("Failed to edit item")
+    return {
+      errors: {
+        other: "An error occurred. Please try again later.",
+      },
+    }
   }
 
   revalidatePath("/items")

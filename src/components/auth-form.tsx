@@ -1,43 +1,47 @@
 "use client"
 
 import { useFormState, useFormStatus } from "react-dom"
-import type { FormState } from "../lib/definitions"
+import type { AuthFormState } from "../lib/definitions"
 import Link from "next/link"
 import styles from "@/app/page.module.css"
+import InputFieldError from "./ui/input-field.error"
+
 export default function AuthForm({
   authFn,
   submitButtonText,
 }: {
-  authFn: (formState: FormState, formData: FormData) => object
+  authFn: (formState: AuthFormState, formData: FormData) => object
   submitButtonText: string
 }) {
-  const [state, action] = useFormState(authFn, { errors: {} })
+  const [state, action] = useFormState<AuthFormState, FormData>(authFn, {
+    errors: {
+      username: [],
+      password: [],
+      other: "",
+    },
+  })
   const { pending } = useFormStatus()
   return (
     <form action={action} className={styles.authForm}>
       <h2>{submitButtonText}</h2>
-      <input
-        id="username"
-        name="username"
-        placeholder="Username"
-        required
-        className={styles.authFormInput}
-      />
-      {state?.errors?.username?.map((error: string) => (
-        <li key={error}>{error}</li>
-      ))}
+      <div className={styles.authInputFieldsWrapper}>
+        <input
+          id="username"
+          name="username"
+          placeholder="Username"
+          className={styles.authFormInput}
+        />
+        <InputFieldError field="username" state={state} />
 
-      <input
-        id="password"
-        name="password"
-        placeholder="Password"
-        type="password"
-        required
-        className={styles.authFormInput}
-      />
-      {state?.errors?.password?.map((error: string) => (
-        <li key={error}>{error}</li>
-      ))}
+        <input
+          id="password"
+          name="password"
+          placeholder="Password"
+          type="password"
+          className={styles.authFormInput}
+        />
+        <InputFieldError field="password" state={state} />
+      </div>
 
       <Link href="/forgot-password" className={styles.forgotPasswordLink}>
         Forgot your password?

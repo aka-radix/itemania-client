@@ -1,28 +1,34 @@
 "use client"
 
-import styles from "@/app/page.module.css"
 import { editProduct } from "@/actions/data"
-import type { EditItemState, Item } from "@/lib/definitions"
+import styles from "@/app/page.module.css"
+import type { EditItemFormState, EditItemState, Item } from "@/lib/definitions"
 import Link from "next/link"
 import { useState } from "react"
 import { useFormState } from "react-dom"
+import InputFieldError from "./ui/input-field.error"
 
 export default function EditProductForm({ item }: { item: Item }) {
   const [formData, setFormData] = useState<EditItemState>({
-    productName: item?.name,
-    productDescription: item?.description,
-    productPrice: item?.price,
-    productImage: null,
+    name: item?.name,
+    description: item?.description,
+    price: item?.price,
+    image: null,
   })
 
-  const [state, action] = useFormState(editProduct, {
-    productName: item?.name,
-    productDescription: item?.description,
-    productPrice: item?.price,
-    productImage: item?.image,
-    productId: item?.id,
-  })
-
+  const [state, action] = useFormState<EditItemFormState, FormData>(
+    editProduct,
+    {
+      errors: {
+        image: [],
+        name: [],
+        description: [],
+        price: [],
+        other: "",
+      },
+    }
+  )
+  console.log(state)
   return (
     <form action={action} className={styles.editProductForm}>
       <div className={styles.uploadImageFieldContainerWrapper}>
@@ -32,10 +38,7 @@ export default function EditProductForm({ item }: { item: Item }) {
           id="uploadImageFieldContainer"
           className={styles.uploadImageFieldContainer}
         >
-          <label
-            htmlFor="productImage"
-            className={styles.uploadImageFieldLabel}
-          >
+          <label htmlFor="image" className={styles.uploadImageFieldLabel}>
             <h5 className={styles.uploadImageFieldLabelMessage}>
               SELECT A FILE TO UPLOAD
             </h5>
@@ -43,13 +46,13 @@ export default function EditProductForm({ item }: { item: Item }) {
           <input
             className={styles.uploadImageFieldInput}
             type="file"
-            name="productImage"
-            id="productImage"
+            name="image"
+            id="image"
             accept="image/*"
             multiple={false}
             onChange={(e) => {
               const file = e?.target?.files?.[0] ?? null
-              setFormData({ ...formData, productImage: file })
+              setFormData({ ...formData, image: file })
             }}
           />
         </div>
@@ -57,60 +60,55 @@ export default function EditProductForm({ item }: { item: Item }) {
           Only png, jpg, and jpeg formats are allowed.
         </span>
       </div>
-      {state?.errors?.productImage && <p>{state.errors.productImage}</p>}
+      <InputFieldError field="image" state={state} />
 
       <div className={styles.formInputContainer}>
-        <label htmlFor="productName">Product Name</label>
+        <label htmlFor="name">Product Name</label>
         <input
           type="text"
-          name="productName"
-          id="productName"
-          value={formData?.productName}
-          required
-          minLength={2}
+          name="name"
+          id="name"
+          value={formData?.name}
           placeholder="Enter Name"
-          onChange={(e) =>
-            setFormData({ ...formData, productName: e.target.value })
-          }
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         />
       </div>
-      {state?.errors?.productName && <p>{state.errors.productName}</p>}
+      <InputFieldError field="name" state={state} />
 
       <div className={styles.formInputContainer}>
-        <label htmlFor="productDescription">Product Description</label>
+        <label htmlFor="description">Product Description</label>
         <textarea
           rows={3}
-          id="productDescription"
-          name="productDescription"
+          id="description"
+          name="description"
           placeholder="Enter Description"
           className={styles.formInputItemDescriptionTextarea}
-          value={formData?.productDescription}
+          value={formData?.description}
           onChange={(e) =>
-            setFormData({ ...formData, productDescription: e.target.value })
+            setFormData({ ...formData, description: e.target.value })
           }
         ></textarea>
       </div>
-      {state?.errors?.productDescription && (
-        <p>{state.errors.productDescription}</p>
-      )}
+      <InputFieldError field="description" state={state} />
 
       <div className={styles.formInputContainer}>
-        <label htmlFor="productPrice">Product Price</label>
+        <label htmlFor="price">Product Price</label>
         <input
           type="number"
-          name="productPrice"
-          id="productPrice"
+          name="price"
+          id="price"
           placeholder="Enter Price"
-          min={1}
-          value={formData?.productPrice}
+          value={formData?.price}
           onChange={(e) =>
-            setFormData({ ...formData, productPrice: Number(e?.target?.value) })
+            setFormData({ ...formData, price: Number(e?.target?.value) })
           }
         />
       </div>
-      {state?.errors?.productPrice && <p>{state.errors.productPrice}</p>}
+      <InputFieldError field="price" state={state} />
 
       <input type="hidden" name="productId" value={item?.id} />
+
+      {state?.errors?.other && <p>{state?.errors?.other}</p>}
 
       <div className={styles.formActionButtonsContainer}>
         <Link

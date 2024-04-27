@@ -34,3 +34,7 @@ input, textarea {
 .cancel {
   background-color: #919194;
 }
+
+.error {
+  color: red;
+}

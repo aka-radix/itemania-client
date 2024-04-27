@@ -1,16 +1,17 @@
 import { z } from "zod"
 
-export type EditProductFormState = {
+export interface EditItemFormState {
   errors?: {
-    productImage?: string
-    productName?: string
-    productDescription?: string
-    productPrice?: string
+    image?: string[]
+    name?: string[]
+    description?: string[]
+    price?: string[]
+    other?: string
   }
   message?: string
 }
 
-export interface FormState {
+export interface AuthFormState {
   errors?: {
     username?: string[]
     password?: string[]
@@ -33,10 +34,10 @@ export interface Item {
 }
 
 export interface EditItemState {
-  productName: string
-  productDescription: string
-  productPrice: number
-  productImage: File | null
+  name: string
+  description: string
+  price: number
+  image: File | null
 }
 
 export interface ItemsResponse {
@@ -57,30 +58,30 @@ export interface ProductProps {
 export const SignupFormSchema = z.object({
   username: z
     .string()
-    .min(2, { message: "Name must be at least 2 characters long." })
+    .min(2, { message: "Must be at least 2 characters long." })
     .trim(),
   password: z
     .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
+    .min(8, { message: "Must be at least 8 characters long" })
+    .regex(/[a-zA-Z]/, { message: "Must contain at least one letter." })
+    .regex(/[0-9]/, { message: "Must contain at least one number." })
     .regex(/[^a-zA-Z0-9]/, {
-      message: "Contain at least one special character.",
+      message: "Must contain at least one special character.",
     })
     .trim(),
 })
 
 export const EditItemFormSchema = z.object({
-  productImage: z
-    .any()
+  image: z
+    .instanceof(File)
     .optional()
-    .refine((file: File) => {
+    .refine((file: File | undefined) => {
       if (file) {
         return file?.size <= 1024 * 1024 * 20
       }
       return true
     }, `Max image size is 2MB.`)
-    .refine((file: File) => {
+    .refine((file: File | undefined) => {
       if (file) {
         return [
           "image/jpeg",
@@ -89,21 +90,22 @@ export const EditItemFormSchema = z.object({
           "application/octet-stream",
         ].includes(file?.type)
       }
+      return true
     }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
-  productName: z
+  name: z
     .string()
-    .min(2, { message: "Product name must be at least 2 characters long." })
-    .regex(/^[a-zA-Z0-9\s]+$/, {
-      message: "Product name must not contain special characters.",
-    }),
-  productDescription: z.string().optional(),
-  productPrice: z.string().refine(
+    .min(2, "Product name must be at least 2 characters long.")
+    .regex(
+      /^[a-zA-Z0-9\s]+$/,
+      "Product name must not contain special characters."
+    ),
+  description: z.string().optional(),
+  price: z.string().refine(
     (val) => {
       const num = parseInt(val, 10)
       return !Number.isNaN(num) && num >= 1
     },
-    {
-      message: "The price must be greater than or equal to 1",
-    }
+
+    "The price must be greater than or equal to 1"
   ),
 })
