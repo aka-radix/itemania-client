@@ -9,6 +9,10 @@ export async function middleware(request: NextRequest) {
   const productId = request.nextUrl.pathname.match(/\/items\/(\d+)\/edit$/)?.[1]
   const verifiedToken = accessToken && (await verifyToken(accessToken.value))
 
+  if (request.nextUrl.pathname === "/") {
+    return NextResponse.redirect(new URL("/items", request.url))
+  }
+
   if (!verifiedToken && productId) {
     return NextResponse.redirect(new URL(`/items/${productId}`, request.url))
   }
