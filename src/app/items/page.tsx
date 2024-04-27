@@ -7,7 +7,11 @@ export default async function Page() {
 
   return (
     <div className={styles.itemsContainer}>
-      {items?.results?.map((item) => <ItemCard key={item.id} {...item} />)}
+      {items?.results?.length > 0 ? (
+        items?.results?.map((item) => <ItemCard key={item.id} {...item} />)
+      ) : (
+        <h2>No Items Found</h2>
+      )}
     </div>
   )
 }
